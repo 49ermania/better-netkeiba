@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Better netkeiba",
+  "version": "1.0",
+  "icons": {
+    "128": "128.png"
+  },
+  "description": "This extension for better netkeiba.",
+  "host_permissions": [
+    "https://db.sp.netkeiba.com/horse/*"
+  ],
+  "content_scripts": [{
+    "matches": [
+      "https://db.netkeiba.com/horse/*",
+      "https://*.sp.netkeiba.com/*"
+    ],
+    "js": [
+      "content-script.js"
+    ],
+    "run_at": "document_start"
+  }],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
