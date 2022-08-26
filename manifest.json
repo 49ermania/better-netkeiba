@@ -1,14 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Better netkeiba",
-  "version": "1.0",
+  "version": "1.1",
   "icons": {
     "128": "128.png"
   },
   "description": "This extension for better netkeiba.",
-  "host_permissions": [
-    "https://db.sp.netkeiba.com/horse/*"
-  ],
   "content_scripts": [{
     "matches": [
       "https://db.netkeiba.com/horse/*",
