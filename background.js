@@ -3,6 +3,7 @@
 const remoteFetchListener = (req, sender, sendResponse) => {
   if (!req.url) {
     sendError('missing url');
+
     return false;
   }
   try {
@@ -10,6 +11,7 @@ const remoteFetchListener = (req, sender, sendResponse) => {
   }
   catch {
     sendError('Invalid URL: ' + req.url);
+
     return false;
   }
 
@@ -34,6 +36,7 @@ const remoteFetchListener = (req, sender, sendResponse) => {
   .catch(err => {
     sendError('Fetch error: ' + err.message);
   });
+
   return true;
 
   function sendError(message) {
