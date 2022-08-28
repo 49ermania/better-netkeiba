@@ -50,7 +50,8 @@ const convert = (ab, relatives) => {
 }
 
 window.addEventListener('DOMContentLoaded', event => {
-  if (window.location.href.match(/https:\/\/[^\/]*sp\.netkeiba\.com/) &&
+  if (navigator && navigator.userAgentData && !navigator.userAgentData.mobile &&
+      window.location.href.match(/https:\/\/[^\/]*sp\.netkeiba\.com/) &&
       !(window.location.href.match(/https:\/\/(nar)/) && !window.location.href.match(/(\/top\/|\/race\/|\/odds\/|\/yoso\/)/) ||
         window.location.href.match(/https:\/\/(photo|user|tck)/) || window.location.href.match(/(\?pid=user_|\/barometer\/)/))) {
     window.location.replace(window.location.href.replace(/sp\./, '')
