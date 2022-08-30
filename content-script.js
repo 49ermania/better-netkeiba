@@ -31,22 +31,39 @@ const convert = (ab, relatives) => {
   const td = new TextDecoder('EUC-JP');
   const parser = new DOMParser();
   const document = parser.parseFromString(td.decode(ab), 'text/html');
-  const tr = document.querySelectorAll('.ProfileDataTable tr');
+  const trs = document.querySelectorAll('.ProfileDataTable tr');
 
-  for (let i = 0; i < tr.length; i++) {
-    const th = tr[i].getElementsByTagName('th');
+  for (const tr of trs) {
+    const ths = tr.getElementsByTagName('th');
 
-    if (th[0].innerHTML == '馬名の意味') {
-      const naming = tr[i].cloneNode(true);
+    if (ths[0].innerHTML == '馬名の意味') {
+      const naming = tr.cloneNode(true);
 
       relatives.parentNode.insertBefore(naming, relatives);
     }
-    else if (th[0].innerHTML == '兄弟馬') {
-      relatives.innerHTML = tr[i].innerHTML.replace(/\"https:\/\/[^\/]+\.netkeiba\.com\//g, '\"\/');
+    else if (ths[0].innerHTML == '兄弟馬') {
+      relatives.innerHTML = tr.innerHTML.replace(/\"https:\/\/[^\/]+\.netkeiba\.com\//g, '\"\/');
 
       return;
     }
   }
+}
+
+const removeCookie = (domain, path, name) => {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ domain, path, name }, res => {
+      if (res) {
+        if (res.error) {
+          reject(new Error(res.error));
+        }
+
+        return;
+      }
+      else {
+        reject('Something went wrong.');
+      }
+    });
+  })
 }
 
 window.addEventListener('DOMContentLoaded', event => {
@@ -54,6 +71,8 @@ window.addEventListener('DOMContentLoaded', event => {
       window.location.href.match(/https:\/\/[^\/]*sp\.netkeiba\.com/) &&
       !(window.location.href.match(/https:\/\/(nar)/) && !window.location.href.match(/(\/top\/|\/race\/|\/odds\/|\/yoso\/)/) ||
         window.location.href.match(/https:\/\/(photo|user|tck)/) || window.location.href.match(/(\?pid=user_|\/barometer\/)/))) {
+    removeCookie('.netkeiba.com', '/', 'netkeiba_pc_sp');
+
     window.location.replace(window.location.href.replace(/sp\./, '')
     .replace(/(race)\/race_(result)\.html/, '$1/$2.html')
     .replace(/(horse)\/(brood)?(sire|mare)(_detail|_horse)\.html\?id=([0-9a-f]+)\&?/, '$1/$3/$5/?')
@@ -76,15 +95,15 @@ window.addEventListener('DOMContentLoaded', event => {
   }
 
   const id = window.location.href.replace(/^https:\/\/[^\/]+\.netkeiba\.com\/horse\//, '')
-  let tr = document.querySelectorAll('.db_prof_table tr');
+  const trs = document.querySelectorAll('.db_prof_table tr');
 
-  for (let i = 0; i < tr.length; i++) {
-    const th = tr[i].getElementsByTagName('th');
+  for (const tr of trs) {
+    const ths = tr.getElementsByTagName('th');
 
-    if (th[0].innerHTML == '近親馬') {
+    if (ths[0].innerHTML == '近親馬') {
       remoteFetch('https://db.sp.netkeiba.com/horse/' + id, 'buffer')
       .then(result => {
-        convert(result, tr[i]);
+        convert(result, tr);
       });
 
       break;

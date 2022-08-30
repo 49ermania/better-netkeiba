@@ -6,6 +6,7 @@ const remoteFetchListener = (req, sender, sendResponse) => {
 
     return false;
   }
+
   try {
     new URL(req.url);
   }
@@ -20,6 +21,7 @@ const remoteFetchListener = (req, sender, sendResponse) => {
     if (!res.ok) {
       throw new Error('Rensponse is not ok: ' + res.status);
     }
+
     let result = null;
     if (req.type === 'json') {
       result = await res.json();
@@ -44,4 +46,25 @@ const remoteFetchListener = (req, sender, sendResponse) => {
   };
 }
 
-chrome.runtime.onMessage.addListener(remoteFetchListener);
+const backgroundListener = (req, sender, sendResponse) => {
+  if (req.url) {
+    return remoteFetchListener(req, sender, sendResponse);
+  }
+  else if (req.domain) {
+    chrome.cookies.getAll({ domain: req.domain, path: req.path, name: req.name }, function(cookies) {
+      for (const cookie of cookies) {
+        chrome.cookies.remove({ url: 'https://' + cookie.domain.replace(/^\./, '') + cookie.path, name: cookie.name });
+      }
+    });
+    sendResponse({ result: true });
+
+    return true;
+  }
+  else {
+    sendError('missing req');
+
+    return false;
+  }
+}
+
+chrome.runtime.onMessage.addListener(backgroundListener);
