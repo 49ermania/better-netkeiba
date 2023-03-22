@@ -77,6 +77,7 @@ window.addEventListener('DOMContentLoaded', event => {
     .replace(/(race)\/race_(result)\.html/, '$1/$2.html')
     .replace(/(horse)\/(brood)?(sire|mare)(_detail|_horse)\.html\?id=([0-9a-f]+)\&?/, '$1/$3/$5/?')
     .replace(/yoso_(mark_list)\.html/, '$1.html')
+    .replace(/\/\?pid=race_result\&?/, '/race/result.html?')
     .replace(/\/\?pid=race_thisweek\&?/, '/race/search.html?')
     .replace(/\/\?pid=(payback_list)\&?/, '/top/$1.html?')
     .replace(/\/\?pid=(race_tendency|tendency_calendar)\&?/, '/top/race_trend.html?')
